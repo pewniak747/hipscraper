@@ -27,8 +27,10 @@ object Hipscraper {
     passwordField.submit()
 
     var allWords = List[String]()
-    var date = new DateTime(2012, 1, 1, 0, 1)
-    for( i <- 1 to 366) {
+    var year = Integer.parseInt(System.getenv("HIPSCRAPER_YEAR"))
+    var date = new DateTime(year, 1, 1, 0, 1)
+    val endDay = if(year == DateTime.now.getYear) DateTime.now.getDayOfYear else 365
+    for(i <- 1 to endDay) {
       System.err.println("Munching words for %s...".format(date))
       val historyURL = "https://hipchat.com/history/room/%s/%d/%d/%d".format(room, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
       driver.get(historyURL)
