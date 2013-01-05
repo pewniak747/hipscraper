@@ -19,6 +19,9 @@ object Hipscraper {
 
     var driver = new HtmlUnitDriver()
 
+    driver.get("http://pl.wiktionary.org/wiki/Indeks:Polski_-_Najpopularniejsze_s%C5%82owa_1-1000")
+    val commonWords = driver.findElements(By.cssSelector("#mw-content-text a")).asScala.map(_.getText).toSet
+
     driver.get("https://www.hipchat.com/sign_in")
     var emailField = driver.findElement(By.name("email"))
     emailField.sendKeys(email)
@@ -44,7 +47,7 @@ object Hipscraper {
     var normalizedWords = allWords.map((wrd) => wrd.toLowerCase.replaceAll("""[^\p{L}\p{N}]""", ""))
 
     System.err.println("Filtering words...")
-    var filteredWords = normalizedWords.filter((wrd) => wrd.length > 2 && !wrd.startsWith("http"))
+    var filteredWords = normalizedWords.filter((wrd) => wrd.length > 2 && !wrd.startsWith("http") && !commonWords.contains(wrd))
 
     System.err.println("Map-reducing words...")
     var mapReducedWords = filteredWords.groupBy(identity).mapValues(_.size)
