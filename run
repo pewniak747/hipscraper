@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sbt run && ./process.rb
+sbt clean && sbt compile && sbt one-jar && java -jar target/scala-2.9.2/hipscraper_2.9.2-0.0.1-one-jar.jar > words.json

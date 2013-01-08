@@ -11,6 +11,8 @@ import org.openqa.selenium.WebDriver
 import org.openqa.selenium.WebElement
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 
+import com.codahale.jerkson.Json._
+
 object Hipscraper {
   def main(args: Array[String]) {
     val email = System.getenv("HIPSCRAPER_EMAIL")
@@ -53,12 +55,9 @@ object Hipscraper {
     var mapReducedWords = filteredWords.groupBy(identity).mapValues(_.size)
 
     System.err.println("Sorting words...")
-    var sortedWords = mapReducedWords.toList.sortBy { -_._2 }
+    var sortedWords = mapReducedWords.toList.filter(_._2 >= 10).sortBy { -_._2 }
 
-    System.err.println(sortedWords)
-
-    val writer = new PrintWriter(new File("words.csv"))
-    writer.write(sortedWords.map((wrd) => "\"%s\",%s".format(wrd._1, wrd._2)).mkString("\n"))
-    writer.close()
+    val generatedJSON = generate(Map("name" -> "words", "children" -> sortedWords.map((tuple)=>Map("name" -> tuple._1, "size" -> tuple._2))))
+    System.out.println(generatedJSON)
   }
 }
