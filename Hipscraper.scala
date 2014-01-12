@@ -37,7 +37,7 @@ object Hipscraper {
     val endDay = if(year == DateTime.now.getYear) DateTime.now.getDayOfYear else 365
     for(i <- 1 to endDay) {
       System.err.println("Munching words for %s...".format(date))
-      val historyURL = "https://hipchat.com/history/room/%s/%d/%d/%d".format(room, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
+      val historyURL = "https://hipchat.com/history/room/%s/%02d/%02d/%02d".format(room, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
       driver.get(historyURL)
 
       allWords ++= driver.findElements(By.xpath("//div[(contains(@class, 'chatBlock')) and (not(contains(@class, 'systemMessage')))]//p[contains(@class, 'msgText')]")).asScala.map(_.getText.split("""\s+""").map(_.toLowerCase)).flatten
